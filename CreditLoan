@@ -1,0 +1,97 @@
+import java.util.Scanner;
+public class creditloan {
+    static double loanRepayment;
+    static double interestRate;
+    static double loanPrincipal;
+    static double totalRepayment = 0;
+    static double monthlyInstallment = 0;
+    static double paidAmount = 0;
+    static double repaymentPeriod=0;
+    static boolean status=false;
+
+    //apply loan method
+    public static void applyLoan(double principal,int period,double rate){
+       double loanPrincipal=principal;
+       int repaymentPeriod=period;
+       double interestRate=rate;
+       double monthlyInterestrate=(rate/100)/12;
+       totalRepayment=principal*Math.pow(1+monthlyInterestrate,repaymentPeriod);
+       monthlyInstallment=totalRepayment/repaymentPeriod;
+       status=true;
+       paidAmount=0;
+
+       System.out.println("Loan Applied");
+       System.out.printf("Monthly Installment:%.2f\n",monthlyInstallment);
+       System.out.printf("Total repayment:%.2f\n",totalRepayment);
+
+    }
+
+    //repay loan method
+    public static  void repayLoan(double repayment){
+        if(repayment>totalRepayment-paidAmount){
+            System.out.println("Your payment exceeds the the total amount.Enter a valid amount.");
+            return;
+        }
+        paidAmount+=repayment;
+        if(paidAmount>=totalRepayment){
+           status=false;
+           loanPrincipal=0;
+           loanRepayment=0;
+           interestRate=0;
+           totalRepayment=0;
+           repaymentPeriod=0;
+           monthlyInstallment=0;
+           paidAmount=0;
+           System.out.println("Loan fully repaid!");
+        }else{
+            System.out.printf("Payment Successful!Remaining amount to be paid:RM%.2f\n",totalRepayment-paidAmount);
+        }
+    }
+    public static void main(String[] args)  {
+        Scanner scanner=new Scanner(System.in);
+        
+        while (true) { 
+            System.out.println("Credit loan:");
+            System.out.println("1.Apply loan");
+            System.out.println("2.Repay loan");
+            System.out.println("3.Exit");
+            System.out.println("Choose an option:");
+            int option=scanner.nextInt();
+
+            switch(option){
+                case 1:
+                if(status){
+                    System.out.println("You already have an active loan.Please repay loan");
+                }else{
+                    System.out.println("Enter principal amount:");
+                    double principal=scanner.nextInt();
+                    System.out.println("Enter interest period:");
+                    int period=scanner.nextInt();
+                    System.out.println("Enter interest rate in %=");
+                    double rate=scanner.nextDouble();
+
+                    applyLoan(principal, period, rate);
+                }
+                break;
+                case 2:
+                if (status) {
+                    System.out.printf("Remaining Amount to Pay: %.2f%n", totalRepayment - paidAmount);
+                    System.out.print("Enter repayment amount: ");
+                    double repayment = scanner.nextDouble();
+
+                    repayLoan(repayment);
+                } else {
+                    System.out.println("No active loan to repay.");
+                }
+                break;
+                case 3:
+                System.out.println("Exiting Credit Loan.");
+                scanner.close();
+                return;
+                default:
+                System.out.println("Invalid option. Please choose again.");
+            }
+            }
+
+    }
+}
